@@ -87,11 +87,7 @@ app.use(
   })
 );
 
-// const store = MongoStore.create({
-//   mongoUrl: dbUrl,
-//   secret: process.env.SECRET || 'thisshouldbeabettersecret',
-//   touchAfter: 24 * 60 * 60,
-// });
+
 
 ////////////////////////
 // Debug
@@ -105,17 +101,7 @@ store.on('error', function(e) {
   console.log('SESSION STORE ERROR', e);
 });
 
-app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  store.get(req.sessionID, (err, session) => {
-    if (err) {
-      console.log('Error retrieving session:', err);
-    } else {
-      console.log('Session data from store:', session);
-    }
-    next();
-  });
-});
+
 
 const sessionConfig = {
   store,
@@ -125,7 +111,7 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production', // Change to false for local testing
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -142,6 +128,18 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
+  console.log('Session ID:', req.sessionID);
+  store.get(req.sessionID, (err, session) => {
+    if (err) {
+      console.log('Error retrieving session:', err);
+    } else {
+      console.log('Session data from store:', session);
+    }
+    next();
+  });
+});
+
+app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
@@ -149,6 +147,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
+
 app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/reviews', reviewsRoutes);
 app.use('/', userRoutes);
