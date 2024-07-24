@@ -156,6 +156,11 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
+app.get('/test-session', (req, res) => {
+  req.session.test = 'Session is working';
+  res.send('Session test complete');
+});
+
 app.all('*', (req, res, next) => {
   next(new ExpressError('Page Not Found', 404));
 });
