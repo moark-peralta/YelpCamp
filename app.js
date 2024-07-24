@@ -21,7 +21,6 @@ const userRoutes = require('./routes/users');
 const MongoStore = require('connect-mongo');
 
 const dbUrl = process.env.DB_URL  || 'mongodb://localhost:27017/yelp-camp';
-// const dbUrl = 'mongodb://localhost:27017/yelp-camp';
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -87,10 +86,8 @@ app.use(
   })
 );
 
+console.log('NODE_ENV:', process.env.NODE_ENV);
 
-
-////////////////////////
-// Debug
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   secret: process.env.SECRET || 'thisshouldbeabettersecret',
@@ -101,8 +98,6 @@ store.on('error', function(e) {
   console.log('SESSION STORE ERROR', e);
 });
 
-
-
 const sessionConfig = {
   store,
   name: 'session',
@@ -111,11 +106,13 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Change to false for local testing
+    secure: process.env.NODE_ENV === 'production',
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
+
+console.log('Session Config:', sessionConfig);
 
 app.use(session(sessionConfig));
 
@@ -147,7 +144,6 @@ app.use((req, res, next) => {
 });
 
 // Routes
-
 app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/reviews', reviewsRoutes);
 app.use('/', userRoutes);
@@ -158,9 +154,7 @@ app.get('/', (req, res) => {
 
 app.get('/test-session', (req, res) => {
   req.session.test = 'Session is working';
-  console.log(req.session.test);
-
-  
+  console.log('Session test:', req.session.test);
   res.send('Session test complete');
 });
 
@@ -174,7 +168,6 @@ app.use((err, req, res, next) => {
   if (!err.message) err.message = 'Oh no! Something Went Wrong!';
   res.status(statusCode).render('error', { err });
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
