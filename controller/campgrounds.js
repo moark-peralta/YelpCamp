@@ -81,8 +81,7 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 
-const getGeoCoordinates = require('../utils/showMap');
-const Campground = require('../models/campground');
+
 
 module.exports.createCampgrounds = async (req, res, next) => {
   try {
