@@ -81,29 +81,31 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 
+const getGeoCoordinates = require('../utils/showMap');
+const Campground = require('../models/campground');
 
 module.exports.createCampgrounds = async (req, res, next) => {
-    try {
-        const address = req.body.campground.location;
-        const { lat, lon } = await getGeoCoordinates(address);
-        
-        const campground = new Campground({
-            ...req.body.campground,
-            geometry: {
-                type: 'Point',
-                coordinates: [lon, lat]
-            }
-        });
-        campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
-        campground.author = req.user._id;
-        await campground.save();
-        
-        req.flash('success', 'Successfully made a campground');
-        res.redirect(`/campgrounds/${campground._id}`);
-    } catch (error) {
-        req.flash('error', 'Could not create campground');
-        res.redirect('/campgrounds');
-    }
+  try {
+    const address = req.body.campground.location;
+    const { lat, lon } = await getGeoCoordinates(address);
+    
+    const campground = new Campground({
+      ...req.body.campground,
+      geometry: {
+        type: 'Point',
+        coordinates: [lon, lat]
+      }
+    });
+    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    campground.author = req.user._id;
+    await campground.save();
+    
+    req.flash('success', 'Successfully made a campground');
+    res.redirect(`/campgrounds/${campground._id}`);
+  } catch (error) {
+    req.flash('error', 'Could not create campground');
+    res.redirect('/campgrounds');
+  }
 };
 
 

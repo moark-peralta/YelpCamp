@@ -26,19 +26,19 @@ module.exports.renderLoginForm = (req,res) => {
     res.render('users/login')
 }
 
-module.exports.userLogin = (req, res)=> {
-    req.flash('success', 'Welcome Back')
-    const redirectUrl = req.session.returnTo || '/campgrounds'
-    delete req.session.returnTo
-    res.redirect(redirectUrl)
-}
+module.exports.userLogin = (req, res) => {
+    req.flash('success', 'Welcome Back');
+    const redirectUrl = req.session.returnTo || '/campgrounds';
+    delete req.session.returnTo;
+    res.redirect(redirectUrl);
+};
 
 module.exports.userLogout = (req, res, next) => {
     req.logout(function (err) {
         if (err) {
             return next(err);
         }
-        req.flash('success', 'Succesfully Logged Out!');
+        req.flash('success', 'Successfully Logged Out!');
         res.redirect('/campgrounds');
     });
-}
+};
