@@ -111,7 +111,7 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: true, // Change to false for local testing
+    secure: process.env.NODE_ENV === 'production', // Change to false for local testing
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -159,6 +159,7 @@ app.get('/', (req, res) => {
 app.get('/test-session', (req, res) => {
   req.session.test = 'Session is working';
   console.log(req.session.test);
+
   
   res.send('Session test complete');
 });
@@ -173,6 +174,7 @@ app.use((err, req, res, next) => {
   if (!err.message) err.message = 'Oh no! Something Went Wrong!';
   res.status(statusCode).render('error', { err });
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
