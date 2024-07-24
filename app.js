@@ -111,7 +111,7 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: true, // Change to false for local testing
+    secure: process.env.NODE_ENV === 'production', // Change to false for local testing
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
