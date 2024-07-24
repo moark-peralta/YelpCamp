@@ -87,10 +87,34 @@ app.use(
   })
 );
 
+// const store = MongoStore.create({
+//   mongoUrl: dbUrl,
+//   secret: process.env.SECRET || 'thisshouldbeabettersecret',
+//   touchAfter: 24 * 60 * 60,
+// });
+
+////////////////////////
+// Debug
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   secret: process.env.SECRET || 'thisshouldbeabettersecret',
   touchAfter: 24 * 60 * 60,
+});
+
+store.on('error', function(e) {
+  console.log('SESSION STORE ERROR', e);
+});
+
+app.use((req, res, next) => {
+  console.log('Session ID:', req.sessionID);
+  store.get(req.sessionID, (err, session) => {
+    if (err) {
+      console.log('Error retrieving session:', err);
+    } else {
+      console.log('Session data from store:', session);
+    }
+    next();
+  });
 });
 
 const sessionConfig = {
