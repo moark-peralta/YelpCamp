@@ -16,43 +16,47 @@
 <div>
   <a href="/campgrounds/new">Add Campground</a>
 </div>
-<% for (let campground of campgrounds){ %>
-<div class="card mb-3">
-  <div class="row">
-    <div class="col-md-4">
-      <img class="img-fluid" alt="" src="<%= campground.images[0].url %>" crossorigin="anonymous" />
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title"><%= campground.title %></h5>
-        <p class="card-text"><%= campground.description %></p>
-        <p class="card-text">
-          <small class="text-muted"><%= campground.location %></small>
-        </p>
-        <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>">
-          View <%= campground.title %>
-        </a>
+<% for (let campground of campgrounds) { %>
+  <div class="card mb-3">
+    <div class="row">
+      <div class="col-md-4">
+        <% if (campground.images && campground.images.length > 0) { %>
+          <img class="img-fluid" alt="" src="<%= campground.images[0].url %>" crossorigin="anonymous" />
+        <% } else { %>
+          <img class="img-fluid" alt="No image available" src="https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg?w=1060" crossorigin="anonymous" />
+        <% } %>
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title"><%= campground.title %></h5>
+          <p class="card-text"><%= campground.description %></p>
+          <p class="card-text">
+            <small class="text-muted"><%= campground.location %></small>
+          </p>
+          <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>">
+            View <%= campground.title %>
+          </a>
+        </div>
       </div>
     </div>
   </div>
-</div>
 <% } %>
 
 <!-- Pagination Controls -->
 <nav aria-label="Page navigation example">
   <ul class="pagination justify-content-center">
     <% if (currentPage > 1) { %>
-    <li class="page-item">
-      <a class="page-link" href="?page=<%= currentPage - 1 %>" aria-label="Previous">
-        <span aria-hidden="true">&laquo; Previous</span>
-      </a>
-    </li>
+      <li class="page-item">
+        <a class="page-link" href="?page=<%= currentPage - 1 %>" aria-label="Previous">
+          <span aria-hidden="true">&laquo; Previous</span>
+        </a>
+      </li>
     <% } else { %>
-    <li class="page-item disabled">
-      <a class="page-link" href="#" aria-label="Previous">
-        <span aria-hidden="true">&laquo; Previous</span>
-      </a>
-    </li>
+      <li class="page-item disabled">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo; Previous</span>
+        </a>
+      </li>
     <% } %>
 
     <li class="page-item active">
@@ -62,17 +66,17 @@
     </li>
 
     <% if (currentPage < totalPages) { %>
-    <li class="page-item">
-      <a class="page-link" href="?page=<%= currentPage + 1 %>" aria-label="Next">
-        <span aria-hidden="true">Next &raquo;</span>
-      </a>
-    </li>
+      <li class="page-item">
+        <a class="page-link" href="?page=<%= currentPage + 1 %>" aria-label="Next">
+          <span aria-hidden="true">Next &raquo;</span>
+        </a>
+      </li>
     <% } else { %>
-    <li class="page-item disabled">
-      <a class="page-link" href="#" aria-label="Next">
-        <span aria-hidden="true">Next &raquo;</span>
-      </a>
-    </li>
+      <li class="page-item disabled">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">Next &raquo;</span>
+        </a>
+      </li>
     <% } %>
   </ul>
 </nav>

@@ -112,7 +112,7 @@ const sessionConfig = {
   },
 };
 
-console.log('Session Config:', sessionConfig);
+// console.log('Session Config:', sessionConfig);
 
 app.use(session(sessionConfig));
 
@@ -124,17 +124,17 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  store.get(req.sessionID, (err, session) => {
-    if (err) {
-      console.log('Error retrieving session:', err);
-    } else {
-      console.log('Session data from store:', session);
-    }
-    next();
-  });
-});
+// app.use((req, res, next) => {
+//   console.log('Session ID:', req.sessionID);
+//   store.get(req.sessionID, (err, session) => {
+//     if (err) {
+//       console.log('Error retrieving session:', err);
+//     } else {
+//       console.log('Session data from store:', session);
+//     }
+//     next();
+//   });
+// });
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
@@ -152,11 +152,11 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
-app.get('/test-session', (req, res) => {
-  req.session.test = 'Session is working';
-  console.log('Session test:', req.session.test);
-  res.send('Session test complete');
-});
+// app.get('/test-session', (req, res) => {
+//   req.session.test = 'Session is working';
+//   console.log('Session test:', req.session.test);
+//   res.send('Session test complete');
+// });
 
 app.all('*', (req, res, next) => {
   next(new ExpressError('Page Not Found', 404));
