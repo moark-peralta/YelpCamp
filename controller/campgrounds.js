@@ -88,8 +88,7 @@ module.exports.createCampgrounds = async (req, res, next) => {
     const address = req.body.campground.location;
     const { lat, lon } = await getGeoCoordinates(address);
     
-    console.log(req.body.campground);
-    console.log(req.files); 
+   
     const campground = new Campground({
       ...req.body.campground,
       geometry: {
@@ -100,6 +99,9 @@ module.exports.createCampgrounds = async (req, res, next) => {
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     campground.author = req.user._id;
     await campground.save();
+
+    console.log(req.body.campground);
+    console.log(req.files); 
    
     req.flash('success', 'Successfully made a campground');
     res.redirect(`/campgrounds/${campground._id}`);
