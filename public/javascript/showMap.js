@@ -1,19 +1,19 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const mapElement = document.getElementById('map');
-    const lat = parseFloat(mapElement.dataset.lat);
-    const lon = parseFloat(mapElement.dataset.lon);
-    const location = mapElement.dataset.location;
+const initMap = (latitude, longitude, apiKey) => {
+    const map = L.map('map').setView([latitude, longitude], 13);
 
-    // Initialize the map
-    const map = L.map('map').setView([lat, lon], 13);
-
-    // Add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+    L.tileLayer(`https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=0702a258f7be4991ac42a58d786a3cc4`, {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+            'Imagery © <a href="https://www.thunderforest.com/">Thunderforest</a>',
+        maxZoom: 18
     }).addTo(map);
 
-    // Add marker with dynamic location information in the popup
-    L.marker([lat, lon]).addTo(map)
-        .bindPopup(`<strong>Campground Location</strong><br>${location}`)
-        .openPopup();
-});
+    L.marker([latitude, longitude]).addTo(map);
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+      const { lat, lon, apiKey } = mapElement.dataset;
+      initMap(lat, lon, apiKey);
+    }
+  });

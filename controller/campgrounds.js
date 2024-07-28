@@ -3,8 +3,11 @@ const Review = require('../models/review');
 const { campgroundSchema, reviewSchema } = require('../schemas');
 const ExpressError = require('../utils/expressError');
 const {cloudinary}= require('../cloudinary')
-
 const { getGeoCoordinates } = require('../utils/showMap')
+
+
+
+
 // Middleware functions
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -84,31 +87,40 @@ module.exports.renderNewForm = (req, res) => {
 
 
 module.exports.createCampgrounds = async (req, res, next) => {
-  try {
-    const address = req.body.campground.location;
-    const { lat, lon } = await getGeoCoordinates(address);
-    
-   
-    const campground = new Campground({
-      ...req.body.campground,
-      geometry: {
-        type: 'Point',
-        coordinates: [lon, lat]
-      }
-    });
-    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
-    campground.author = req.user._id;
-    await campground.save();
+    try {
+        const address = req.body.campground.location;
+        console.log('Location:', address);
 
-    console.log(req.body.campground);
-    console.log(req.files); 
-   
-    req.flash('success', 'Successfully made a campground');
-    res.redirect(`/campgrounds/${campground._id}`);
-  } catch (error) {
-    req.flash('error', 'Could not create campground');
-    res.redirect('/campgrounds');
-  }
+        const { lat, lon } = await getGeoCoordinates(address);
+        console.log('Coordinates:', { lat, lon });
+
+        if (!lat || !lon) {
+            throw new Error('Invalid coordinates');
+        }
+
+        const campground = new Campground({
+            ...req.body.campground,
+            geometry: {
+                type: 'Point',
+                coordinates: [lon, lat]
+            }
+        });
+
+        console.log('Campground data before save:', campground);
+
+        campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        console.log('Images:', campground.images);
+
+        campground.author = req.user._id;
+        await campground.save();
+
+        req.flash('success', 'Successfully made a campground');
+        res.redirect(`/campgrounds/${campground._id}`);
+    } catch (error) {
+        console.error('Error creating campground:', error);
+        req.flash('error', `Could not create campground: ${error.message}`);
+        res.redirect('/campgrounds');
+    }
 };
 
 

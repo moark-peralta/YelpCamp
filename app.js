@@ -58,8 +58,22 @@ const styleSrcUrls = [
   "https://unpkg.com/",
   "https://cdn.jsdelivr.net",
 ];
-const connectSrcUrls = [];
+const connectSrcUrls = [
+  "https://*.thunderforest.com"
+];
 const fontSrcUrls = [];
+const imgSrcUrls = [
+  "'self'",
+  "blob:",
+  "data:",
+  "https://unpkg.com/",
+  "https://a.tile.openstreetmap.org/",
+  "https://b.tile.openstreetmap.org/",
+  "https://c.tile.openstreetmap.org/",
+  "https://res.cloudinary.com/dmk65rs95/",
+  "https://images.unsplash.com/",
+  "https://*.thunderforest.com"
+];
 
 app.use(
   helmet.contentSecurityPolicy({
@@ -70,17 +84,7 @@ app.use(
       styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
       workerSrc: ["'self'", "blob:"],
       objectSrc: [],
-      imgSrc: [
-        "'self'",
-        "blob:",
-        "data:",
-        "https://unpkg.com/",
-        "https://a.tile.openstreetmap.org/",
-        "https://b.tile.openstreetmap.org/",
-        "https://c.tile.openstreetmap.org/",
-        "https://res.cloudinary.com/dmk65rs95/", // Adjust to match your Cloudinary account
-        "https://images.unsplash.com/",
-      ],
+      imgSrc: imgSrcUrls,
       fontSrc: ["'self'", ...fontSrcUrls],
     },
   })
